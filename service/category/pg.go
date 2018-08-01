@@ -23,6 +23,10 @@ func NewPGService(db *gorm.DB) Service {
 // Create implement Create for Category service
 func (s *pgService) Create(_ context.Context, p *domain.Category) error {
 	var err = s.db.Create(p).Error
+	//Check name category is exist in table categories
+	if err != nil {
+		return ErrExistName
+	}
 	return err
 }
 
@@ -36,6 +40,13 @@ func (s *pgService) Update(_ context.Context, p *domain.Category) (*domain.Categ
 		return nil, err
 	}
 	var err = s.db.Save(&old).Error
+	//Check name category is exist in table categories
+	if err != nil {
+		return nil, ErrExistName
+	}
+	if p.Name != "" {
+		old.Name = p.Name
+	}
 	return &old, err
 }
 

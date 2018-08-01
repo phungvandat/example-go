@@ -22,6 +22,14 @@ func NewPGService(db *gorm.DB) Service {
 
 // Create implement Create for Book service
 func (s *pgService) Create(_ context.Context, p *domain.Book) error {
+	// Check id of category exist in table categories
+	var checkErr = s.db.Where("id = ?", p.CategoryID).Find(&domain.Category{}).Error
+	if checkErr != nil {
+		if checkErr == gorm.ErrRecordNotFound {
+			return ErrNotExistCategoryID
+		}
+		return checkErr
+	}
 	return s.db.Create(p).Error
 }
 
@@ -39,6 +47,14 @@ func (s *pgService) Update(_ context.Context, p *domain.Book) (*domain.Book, err
 	}
 	if !p.CategoryID.IsZero() {
 		old.CategoryID = p.CategoryID
+		// Check id of category exist in table categories
+		var checkExist = s.db.Where("id = ?", p.CategoryID).Find(&domain.Category{}).Error
+		if checkExist != nil {
+			if checkExist == gorm.ErrRecordNotFound {
+				return nil, ErrNotExistCategoryID
+			}
+			return nil, checkExist
+		}
 	}
 
 	if p.Author != "" {

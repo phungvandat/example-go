@@ -78,5 +78,7 @@ func (s *pgService) Delete(_ context.Context, p *domain.Category) error {
 		}
 		return err
 	}
+	//Delete the books have category_id
+	s.db.Where("category_id = ?", p.ID).Delete(&domain.Book{})
 	return s.db.Delete(old).Error
 }

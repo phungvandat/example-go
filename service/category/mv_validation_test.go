@@ -1,4 +1,4 @@
-package user
+package category
 
 import (
 	"context"
@@ -11,61 +11,34 @@ import (
 
 func Test_validationMiddleware_Update(t *testing.T) {
 	serviceMock := &ServiceMock{
-		UpdateFunc: func(_ context.Context, p *domain.User) (*domain.User, error) {
+		UpdateFunc: func(_ context.Context, p *domain.Category) (*domain.Category, error) {
 			return p, nil
 		},
 	}
 
 	defaultCtx := context.Background()
 	type args struct {
-		p *domain.User
+		p *domain.Category
 	}
 	tests := []struct {
 		name            string
 		args            args
-		wantOutput      *domain.User
+		wantOutput      *domain.Category
 		wantErr         bool
 		errorStatusCode int
 	}{
 		{
-			name: "valid user",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "example@gmail.co",
+			name: "valid category",
+			args: args{&domain.Category{
+				Name: "why not love me.",
 			}},
-			wantOutput: &domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "example@gmail.com",
+			wantOutput: &domain.Category{
+				Name: "why not love",
 			},
 		},
 		{
-			name: "invalid user by missing name",
-			args: args{&domain.User{
-				Email: "example@gmail.com",
-			}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name: "invalid user by missing email",
-			args: args{&domain.User{
-				Name: "Curabitur vulputate vestibulum lorem.",
-			}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name: "invalid user by wrong email format",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "wrong email format",
-			}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name:            "invalid user by missing attribute",
-			args:            args{&domain.User{}},
+			name:            "invalid category by missing attribute",
+			args:            args{&domain.Category{}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
 		},
@@ -103,14 +76,14 @@ func Test_validationMiddleware_Update(t *testing.T) {
 
 func Test_validationMiddleware_Create(t *testing.T) {
 	serviceMock := &ServiceMock{
-		CreateFunc: func(_ context.Context, p *domain.User) error {
+		CreateFunc: func(_ context.Context, p *domain.Category) error {
 			return nil
 		},
 	}
 
 	defaultCtx := context.Background()
 	type args struct {
-		p *domain.User
+		p *domain.Category
 	}
 	tests := []struct {
 		name            string
@@ -119,38 +92,14 @@ func Test_validationMiddleware_Create(t *testing.T) {
 		errorStatusCode int
 	}{
 		{
-			name: "valid user",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "example@gmail.com",
+			name: "valid category",
+			args: args{&domain.Category{
+				Name: "why do you love me",
 			}},
 		},
 		{
-			name:            "invalid user by missing name",
-			args:            args{&domain.User{}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name: "invalid user by missing email",
-			args: args{&domain.User{
-				Name: "Curabitur vulputate vestibulum lorem.",
-			}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name: "invalid user by wrong email format",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "wrong email format",
-			}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name:            "invalid user by missing attribute",
-			args:            args{&domain.User{}},
+			name:            "invalid category by missing attribute",
+			args:            args{&domain.Category{}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
 		},
@@ -188,13 +137,13 @@ func Test_validationMiddleware_Find(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		p   *domain.User
+		p   *domain.Category
 	}
 	tests := []struct {
 		name       string
 		fields     fields
 		args       args
-		wantOutput *domain.User
+		wantOutput *domain.Category
 		wantErr    bool
 	}{
 		// TODO: Add test cases.
@@ -227,7 +176,7 @@ func Test_validationMiddleware_FindAll(t *testing.T) {
 		name       string
 		fields     fields
 		args       args
-		wantOutput []domain.User
+		wantOutput []domain.Category
 		wantErr    bool
 	}{
 		// TODO: Add test cases.
@@ -255,7 +204,7 @@ func Test_validationMiddleware_Delete(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		p   *domain.User
+		p   *domain.Category
 	}
 	tests := []struct {
 		name    string

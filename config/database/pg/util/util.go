@@ -65,5 +65,6 @@ func MigrateTables(db *gorm.DB) error {
 	return db.AutoMigrate(
 		domain.User{},
 		domain.Category{},
+		domain.Book{},
 	).Error
 }

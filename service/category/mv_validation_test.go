@@ -33,8 +33,24 @@ func Test_validationMiddleware_Update(t *testing.T) {
 				Name: "why not love me.",
 			}},
 			wantOutput: &domain.Category{
-				Name: "why not love",
+				Name: "why not love me.",
 			},
+		},
+		{
+			name: "invalid category by length name = 5",
+			args: args{&domain.Category{
+				Name: "abcde",
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "invalid category by length name < 5",
+			args: args{&domain.Category{
+				Name: "abc",
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
 		},
 		{
 			name:            "invalid category by missing attribute",
@@ -96,6 +112,22 @@ func Test_validationMiddleware_Create(t *testing.T) {
 			args: args{&domain.Category{
 				Name: "why do you love me",
 			}},
+		},
+		{
+			name: "invalid category by length = 5",
+			args: args{&domain.Category{
+				Name: "abcde",
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "invalid category by length < 5",
+			args: args{&domain.Category{
+				Name: "abc",
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
 		},
 		{
 			name:            "invalid category by missing attribute",

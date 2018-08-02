@@ -1,4 +1,4 @@
-package user
+package book
 
 import (
 	"context"
@@ -11,64 +11,60 @@ import (
 
 func Test_validationMiddleware_Update(t *testing.T) {
 	serviceMock := &ServiceMock{
-		UpdateFunc: func(_ context.Context, p *domain.User) (*domain.User, error) {
+		UpdateFunc: func(_ context.Context, p *domain.Book) (*domain.Book, error) {
 			return p, nil
 		},
 	}
 
 	defaultCtx := context.Background()
 	type args struct {
-		p *domain.User
+		p *domain.Book
 	}
 	tests := []struct {
 		name            string
 		args            args
-		wantOutput      *domain.User
+		wantOutput      *domain.Book
 		wantErr         bool
 		errorStatusCode int
 	}{
 		{
-			name: "valid user",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "example@gmail.co",
+			name: "valid book",
+			args: args{&domain.Book{
+				Name:        "why not love me.",
+				CategoryID:  domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-900a8284b9c4"),
+				Author:      "Phung van dat",
+				Description: "the book is very bad",
 			}},
-			wantOutput: &domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "example@gmail.com",
+			wantOutput: &domain.Book{
+				Name:        "why not love me.",
+				CategoryID:  domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-900a8284b9c4"),
+				Author:      "Phung van dat",
+				Description: "the book is very bad",
 			},
 		},
 		{
-			name: "invalid user by missing name",
-			args: args{&domain.User{
-				Email: "example@gmail.com",
+			name: "invalid book by length name = 5",
+			args: args{&domain.Book{
+				Name: "abcde",
 			}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
 		},
 		{
-			name: "invalid user by missing email",
-			args: args{&domain.User{
-				Name: "Curabitur vulputate vestibulum lorem.",
+			name: "invalid book by length name < 5",
+			args: args{&domain.Book{
+				Name: "abc",
 			}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
 		},
+		/* Theo em nghi neu mot nguoi update khong truyen thong tin gi vo thi ta se khong update gi tren category ca.
 		{
-			name: "invalid user by wrong email format",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "wrong email format",
-			}},
+			name:            "invalid book by missing attribute",
+			args:            args{&domain.Book{}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name:            "invalid user by missing attribute",
-			args:            args{&domain.User{}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
+		},*/
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -103,14 +99,14 @@ func Test_validationMiddleware_Update(t *testing.T) {
 
 func Test_validationMiddleware_Create(t *testing.T) {
 	serviceMock := &ServiceMock{
-		CreateFunc: func(_ context.Context, p *domain.User) error {
+		CreateFunc: func(_ context.Context, p *domain.Book) error {
 			return nil
 		},
 	}
 
 	defaultCtx := context.Background()
 	type args struct {
-		p *domain.User
+		p *domain.Book
 	}
 	tests := []struct {
 		name            string
@@ -119,38 +115,79 @@ func Test_validationMiddleware_Create(t *testing.T) {
 		errorStatusCode int
 	}{
 		{
-			name: "valid user",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "example@gmail.com",
+			name: "valid book",
+			args: args{&domain.Book{
+				Name:        "why do you love me",
+				CategoryID:  domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-900a8284b9c4"),
+				Author:      "Phung van dat",
+				Description: "the book is very bad",
 			}},
 		},
 		{
-			name:            "invalid user by missing name",
-			args:            args{&domain.User{}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name: "invalid user by missing email",
-			args: args{&domain.User{
-				Name: "Curabitur vulputate vestibulum lorem.",
+			name: "invalid book by missing name",
+			args: args{&domain.Book{
+				CategoryID:  domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-900a8284b9c4"),
+				Author:      "Phung van dat",
+				Description: "the book is very bad",
 			}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
 		},
 		{
-			name: "invalid user by wrong email format",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "wrong email format",
+			name: "invalid book by missing CategoryID",
+			args: args{&domain.Book{
+				Name:        "why not love me.",
+				Author:      "Phung van dat",
+				Description: "the book is very bad",
 			}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
 		},
 		{
-			name:            "invalid user by missing attribute",
-			args:            args{&domain.User{}},
+			name: "invalid book by missing Description",
+			args: args{&domain.Book{
+				Name:       "why not love me.",
+				CategoryID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-900a8284b9c4"),
+				Author:     "Phung van dat",
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "invalid book by length name = 5",
+			args: args{&domain.Book{
+				Name: "abcde",
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "invalid book by length name < 5",
+			args: args{&domain.Book{
+				Name: "abc",
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "invalid book by length description = 5",
+			args: args{&domain.Book{
+				Description: "abcde",
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "invalid book by length description < 5",
+			args: args{&domain.Book{
+				Description: "abc",
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
+		},
+		{
+			name:            "invalid book by missing attribute",
+			args:            args{&domain.Book{}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
 		},
@@ -188,13 +225,13 @@ func Test_validationMiddleware_Find(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		p   *domain.User
+		p   *domain.Book
 	}
 	tests := []struct {
 		name       string
 		fields     fields
 		args       args
-		wantOutput *domain.User
+		wantOutput *domain.Book
 		wantErr    bool
 	}{
 		// TODO: Add test cases.
@@ -227,7 +264,7 @@ func Test_validationMiddleware_FindAll(t *testing.T) {
 		name       string
 		fields     fields
 		args       args
-		wantOutput []domain.User
+		wantOutput []domain.Book
 		wantErr    bool
 	}{
 		// TODO: Add test cases.
@@ -255,7 +292,7 @@ func Test_validationMiddleware_Delete(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		p   *domain.User
+		p   *domain.Book
 	}
 	tests := []struct {
 		name    string

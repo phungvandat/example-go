@@ -26,7 +26,7 @@ func (mw validationMiddleware) Create(ctx context.Context, category *domain.Cate
 	if category.Name == "" {
 		return ErrNameIsRequired
 	}
-	if len(category.Name) < 5 {
+	if len(category.Name) <= 5 {
 		return ErrminimumLength
 	}
 	return mw.Service.Create(ctx, category)
@@ -43,7 +43,7 @@ func (mw validationMiddleware) Update(ctx context.Context, category *domain.Cate
 	if category.Name == "" {
 		return nil, ErrNameIsRequired
 	}
-	if len(category.Name) < 5 {
+	if len(category.Name) <= 5 {
 		return nil, ErrminimumLength
 	}
 	return mw.Service.Update(ctx, category)

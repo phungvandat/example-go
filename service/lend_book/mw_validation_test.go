@@ -1,73 +1,50 @@
-package user
+package lend_book
 
 import (
 	"context"
 	"net/http"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/phungvandat/example-go/domain"
 )
 
 func Test_validationMiddleware_Update(t *testing.T) {
 	serviceMock := &ServiceMock{
-		UpdateFunc: func(_ context.Context, p *domain.User) (*domain.User, error) {
+		UpdateFunc: func(_ context.Context, p *domain.LendBook) (*domain.LendBook, error) {
 			return p, nil
 		},
 	}
 
 	defaultCtx := context.Background()
 	type args struct {
-		p *domain.User
+		p *domain.LendBook
 	}
+	//Create a time
+	ti := time.Now()
+
 	tests := []struct {
 		name            string
 		args            args
-		wantOutput      *domain.User
+		wantOutput      *domain.LendBook
 		wantErr         bool
 		errorStatusCode int
 	}{
 		{
-			name: "valid user",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "example@gmail.co",
+			name: "valid lendBook",
+			args: args{&domain.LendBook{
+				BookID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-900a8284b9c4"),
+				UserID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-911a8284b9c4"),
+				From:   ti,
+				To:     ti,
 			}},
-			wantOutput: &domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "example@gmail.com",
+			wantOutput: &domain.LendBook{
+				BookID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-900a8284b9c4"),
+				UserID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-911a8284b9c4"),
+				From:   ti,
+				To:     ti,
 			},
-		},
-		{
-			name: "invalid user by missing name",
-			args: args{&domain.User{
-				Email: "example@gmail.com",
-			}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name: "invalid user by missing email",
-			args: args{&domain.User{
-				Name: "Curabitur vulputate vestibulum lorem.",
-			}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name: "invalid user by wrong email format",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "wrong email format",
-			}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name:            "invalid user by missing attribute",
-			args:            args{&domain.User{}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
 		},
 	}
 	for _, tt := range tests {
@@ -103,14 +80,14 @@ func Test_validationMiddleware_Update(t *testing.T) {
 
 func Test_validationMiddleware_Create(t *testing.T) {
 	serviceMock := &ServiceMock{
-		CreateFunc: func(_ context.Context, p *domain.User) error {
+		CreateFunc: func(_ context.Context, p *domain.LendBook) error {
 			return nil
 		},
 	}
 
 	defaultCtx := context.Background()
 	type args struct {
-		p *domain.User
+		p *domain.LendBook
 	}
 	tests := []struct {
 		name            string
@@ -119,38 +96,57 @@ func Test_validationMiddleware_Create(t *testing.T) {
 		errorStatusCode int
 	}{
 		{
-			name: "valid user",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "example@gmail.com",
+			name: "valid lendBook",
+			args: args{&domain.LendBook{
+				BookID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-900a8284b9c4"),
+				UserID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-911a8284b9c4"),
+				From:   time.Now(),
+				To:     time.Now(),
 			}},
 		},
 		{
-			name:            "invalid user by missing name",
-			args:            args{&domain.User{}},
-			wantErr:         true,
-			errorStatusCode: http.StatusBadRequest,
-		},
-		{
-			name: "invalid user by missing email",
-			args: args{&domain.User{
-				Name: "Curabitur vulputate vestibulum lorem.",
+			name: "invalid lendBook by missing bookID",
+			args: args{&domain.LendBook{
+				UserID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-911a8284b9c4"),
+				From:   time.Now(),
+				To:     time.Now(),
 			}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
 		},
 		{
-			name: "invalid user by wrong email format",
-			args: args{&domain.User{
-				Name:  "Curabitur vulputate vestibulum lorem.",
-				Email: "wrong email format",
+			name: "invalid lendBook by missing userID",
+			args: args{&domain.LendBook{
+				BookID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-911a8284b9c4"),
+				From:   time.Now(),
+				To:     time.Now(),
 			}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
 		},
 		{
-			name:            "invalid user by missing attribute",
-			args:            args{&domain.User{}},
+			name: "invalid lendBook by missing from",
+			args: args{&domain.LendBook{
+				BookID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-900a8284b9c4"),
+				UserID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-911a8284b9c4"),
+				To:     time.Now(),
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
+		},
+		{
+			name: "invalid lendBook by missing now",
+			args: args{&domain.LendBook{
+				BookID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-900a8284b9c4"),
+				UserID: domain.MustGetUUIDFromString("dc9076e9-2fda-4019-bd2c-911a8284b9c4"),
+				From:   time.Now(),
+			}},
+			wantErr:         true,
+			errorStatusCode: http.StatusBadRequest,
+		},
+		{
+			name:            "invalid lendBook by missing attribute",
+			args:            args{&domain.LendBook{}},
 			wantErr:         true,
 			errorStatusCode: http.StatusBadRequest,
 		},
@@ -188,13 +184,13 @@ func Test_validationMiddleware_Find(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		p   *domain.User
+		p   *domain.LendBook
 	}
 	tests := []struct {
 		name       string
 		fields     fields
 		args       args
-		wantOutput *domain.User
+		wantOutput *domain.LendBook
 		wantErr    bool
 	}{
 		// TODO: Add test cases.
@@ -227,7 +223,7 @@ func Test_validationMiddleware_FindAll(t *testing.T) {
 		name       string
 		fields     fields
 		args       args
-		wantOutput []domain.User
+		wantOutput []domain.LendBook
 		wantErr    bool
 	}{
 		// TODO: Add test cases.
@@ -255,7 +251,7 @@ func Test_validationMiddleware_Delete(t *testing.T) {
 	}
 	type args struct {
 		ctx context.Context
-		p   *domain.User
+		p   *domain.LendBook
 	}
 	tests := []struct {
 		name    string

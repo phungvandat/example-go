@@ -26,13 +26,13 @@ func (mw validationMiddleware) Create(ctx context.Context, book *domain.Book) (e
 	if book.Name == "" {
 		return ErrNameIsRequired
 	}
-	if len(book.Name) < 5 {
+	if len(book.Name) <= 5 {
 		return ErrMinimumLengthName
 	}
 	if book.Description == "" {
 		return ErrDescriptionIsRequired
 	}
-	if len(book.Description) < 5 {
+	if len(book.Description) <= 5 {
 		return ErrMinimumLengthDescription
 	}
 	//check empty of category_id
@@ -50,11 +50,11 @@ func (mw validationMiddleware) Find(ctx context.Context, book *domain.Book) (*do
 
 func (mw validationMiddleware) Update(ctx context.Context, book *domain.Book) (*domain.Book, error) {
 	//check length of name
-	if book.Name != "" && len(book.Name) < 5 {
+	if book.Name != "" && len(book.Name) <= 5 {
 		return nil, ErrMinimumLengthName
 	}
 	//check length of description
-	if book.Description != "" && len(book.Description) < 5 {
+	if book.Description != "" && len(book.Description) <= 5 {
 		return nil, ErrMinimumLengthDescription
 	}
 	return mw.Service.Update(ctx, book)

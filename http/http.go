@@ -124,6 +124,24 @@ func NewHTTPHandler(endpoints endpoints.Endpoints,
 			encodeResponse,
 			options...,
 		).ServeHTTP)
+		r.Get("/name={book_name}", httptransport.NewServer(
+			endpoints.FindByNameBook,
+			bookDecode.FindByNameRequest,
+			encodeResponse,
+			options...,
+		).ServeHTTP)
+		r.Get("/status={book_status}", httptransport.NewServer(
+			endpoints.FindByStatusBook,
+			bookDecode.FindByStatusRequest,
+			encodeResponse,
+			options...,
+		).ServeHTTP)
+		r.Get("/name={book_name}&status={book_status}", httptransport.NewServer(
+			endpoints.FindByNameAndStatusBook,
+			bookDecode.FindByNameAndStatusRequest,
+			encodeResponse,
+			options...,
+		).ServeHTTP)
 		r.Post("/", httptransport.NewServer(
 			endpoints.CreateBook,
 			bookDecode.CreateRequest,

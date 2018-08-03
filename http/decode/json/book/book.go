@@ -20,6 +20,25 @@ func FindRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	return bookEndpoint.FindRequest{BookID: bookID}, nil
 }
 
+//FindByNameRequest.
+func FindByNameRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	bookName := chi.URLParam(r, "book_name")
+	return bookEndpoint.FindByNameRequest{BookName: bookName}, nil
+}
+
+//FindByStatusRequest
+func FindByStatusRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	bookStatus := chi.URLParam(r, "book_status")
+	return bookEndpoint.FindByStatusRequest{BookStatus: bookStatus}, nil
+}
+
+//FindByNameAndStatusRequest
+func FindByNameAndStatusRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	bookName := chi.URLParam(r, "book_name")
+	bookStatus := chi.URLParam(r, "book_status")
+	return bookEndpoint.FindByNameAndStatusRequest{BookName: bookName, BookStatus: bookStatus}, nil
+}
+
 // FindAllRequest .
 func FindAllRequest(_ context.Context, r *http.Request) (interface{}, error) {
 	return bookEndpoint.FindAllRequest{}, nil

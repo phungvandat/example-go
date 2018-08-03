@@ -15,6 +15,7 @@ var (
 	ErrMinimumLengthName        = errMinimumLengthName{}
 	ErrDescriptionIsRequired    = errDescriptionIsRequired{}
 	ErrMinimumLengthDescription = errMinimumLengthDescription{}
+	ErrFailStatus               = errFailStatus{}
 )
 
 type errNotFound struct{}
@@ -95,4 +96,17 @@ type errMinimumLengthDescription struct{}
 
 func (errMinimumLengthDescription) Error() string {
 	return "Minimum length for description is 5 characters"
+}
+func (errMinimumLengthDescription) StatusCode() int {
+	return http.StatusBadRequest
+}
+
+type errFailStatus struct{}
+
+func (errFailStatus) Error() string {
+	return "Status for book is '0' or '1' with 0(not lend) 1(lend)"
+}
+
+func (errFailStatus) StatusCode() int {
+	return http.StatusBadRequest
 }

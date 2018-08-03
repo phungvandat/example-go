@@ -253,6 +253,109 @@ func Test_validationMiddleware_Find(t *testing.T) {
 	}
 }
 
+func Test_validationMiddleware_FindByName(t *testing.T) {
+	type fields struct {
+		Service Service
+	}
+	type args struct {
+		ctx context.Context
+		p   *domain.Book
+	}
+	tests := []struct {
+		name       string
+		fields     fields
+		args       args
+		wantOutput *domain.Book
+		wantErr    bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mw := validationMiddleware{
+				Service: tt.fields.Service,
+			}
+			gotOutput, err := mw.FindByName(tt.args.ctx, tt.args.p)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("validationMiddleware.FindByName() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotOutput, tt.wantOutput) {
+				t.Errorf("validationMiddleware.FindByName() = %v, want %v", gotOutput, tt.wantOutput)
+			}
+		})
+	}
+}
+
+func Test_validationMiddleware_FindByStatus(t *testing.T) {
+	type fields struct {
+		Service Service
+	}
+	type args struct {
+		ctx    context.Context
+		status string
+	}
+	tests := []struct {
+		name       string
+		fields     fields
+		args       args
+		wantOutput *domain.Book
+		wantErr    bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mw := validationMiddleware{
+				Service: tt.fields.Service,
+			}
+			gotOutput, err := mw.FindByStatus(tt.args.ctx, tt.args.status)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("validationMiddleware.FindByStatus() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotOutput, tt.wantOutput) {
+				t.Errorf("validationMiddleware.FindByStatus() = %v, want %v", gotOutput, tt.wantOutput)
+			}
+		})
+	}
+}
+
+func Test_validationMiddleware_FindByNameAndStatus(t *testing.T) {
+	type fields struct {
+		Service Service
+	}
+	type args struct {
+		ctx    context.Context
+		p      *domain.Book
+		status string
+	}
+	tests := []struct {
+		name       string
+		fields     fields
+		args       args
+		wantOutput *domain.Book
+		wantErr    bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			mw := validationMiddleware{
+				Service: tt.fields.Service,
+			}
+			gotOutput, err := mw.FindByNameAndStatus(tt.args.ctx, tt.args.p, tt.args.status)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("validationMiddleware.FindByNameAndStatus() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotOutput, tt.wantOutput) {
+				t.Errorf("validationMiddleware.FindByNameAndStatus() = %v, want %v", gotOutput, tt.wantOutput)
+			}
+		})
+	}
+}
+
 func Test_validationMiddleware_FindAll(t *testing.T) {
 	type fields struct {
 		Service Service

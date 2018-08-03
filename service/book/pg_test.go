@@ -202,6 +202,106 @@ func TestPGService_Find(t *testing.T) {
 	}
 }
 
+func TestPGService_FindByName(t *testing.T) {
+	type fields struct {
+		db *gorm.DB
+	}
+	type args struct {
+		p *domain.Book
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    []domain.Book
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &pgService{
+				db: tt.fields.db,
+			}
+			got, err := s.FindByName(context.Background(), tt.args.p)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("pgService.FindByName() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("pgService.FindByName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPGService_FindByStatus(t *testing.T) {
+	type fields struct {
+		db *gorm.DB
+	}
+	type args struct {
+		Status string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    []domain.Book
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &pgService{
+				db: tt.fields.db,
+			}
+			got, err := s.FindByStatus(context.Background(), tt.args.Status)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("pgService.FindByStatus() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("pgService.FindByStatus() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestPGService_FindByNameAndStatus(t *testing.T) {
+	type fields struct {
+		db *gorm.DB
+	}
+	type args struct {
+		p      *domain.Book
+		Status string
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    []domain.Book
+		wantErr bool
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := &pgService{
+				db: tt.fields.db,
+			}
+			got, err := s.FindByNameAndStatus(context.Background(), tt.args.p, tt.args.Status)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("pgService.FindByNameAndStatus() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("pgService.FindByNameAndStatus() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestPGService_FindAll(t *testing.T) {
 	type fields struct {
 		db *gorm.DB

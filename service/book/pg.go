@@ -80,6 +80,63 @@ func (s *pgService) Find(_ context.Context, p *domain.Book) (*domain.Book, error
 	return res, nil
 }
 
+//FindByName implement FindByName for Book service
+func (s *pgService) FindByName(_ context.Context, p *domain.Book) ([]domain.Book, error) {
+	res := []domain.Book{}
+	if err := s.db.Where("name = ?", p.Name).Find(&res).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, ErrNotFound
+		}
+		return nil, err
+	}
+
+	return res, nil
+}
+
+//FindByStatus implement FindByStatus for Book service
+func (s *pgService) FindByStatus(_ context.Context, status string) ([]domain.Book, error) {
+	res := []domain.Book{}
+	if status == "0" {
+		if err := s.db.Not("id", s.db.Select("book_id").Find(&domain.LendBook{}).QueryExpr()).Find(&res).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return nil, ErrNotFound
+			}
+			return nil, err
+		}
+	} else {
+		if err := s.db.Joins("join LEND_BOOKS on LEND_BOOKS.book_id = BOOKS.id").Find(&res).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return nil, ErrNotFound
+			}
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
+//FindByNameAndStatus implement FindByNameAndStatus for Book service
+func (s *pgService) FindByNameAndStatus(_ context.Context, p *domain.Book, status string) ([]domain.Book, error) {
+	res := []domain.Book{}
+	if status == "1" {
+		if err := s.db.Joins("join LEND_BOOKS on LEND_BOOKS.book_id = BOOKS.id").Where("BOOKS.name = ? ", p.Name).Find(&res).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				return nil, ErrNotFound
+			}
+			return nil, err
+		}
+	} else {
+		if err := s.db.Not("id", s.db.Select("book_id").Find(&domain.LendBook{}).QueryExpr()).Where("name = ?", p.Name).Find(&res).Error; err != nil {
+			if err == gorm.ErrRecordNotFound {
+				if err == gorm.ErrRecordNotFound {
+					return nil, ErrNotFound
+				}
+				return nil, err
+			}
+		}
+	}
+	return res, nil
+}
+
 // FindAll implement FindAll for Book service
 func (s *pgService) FindAll(_ context.Context) ([]domain.Book, error) {
 	res := []domain.Book{}

@@ -80,6 +80,82 @@ func MakeFindEndPoint(s service.Service) endpoint.Endpoint {
 	}
 }
 
+/*optional*/
+//FindByNameRequest request struct for FindByName Book
+type FindByNameRequest struct {
+	BookName string
+}
+
+//FindByNameResponse response struct for FindByName Book
+type FindByNameResponse struct {
+	Book []domain.Book `json:"books"`
+}
+
+//MakeFindByNameEndpoint make endpoint for FindByName Book
+func MakeFindByNameEndpoint(s service.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		var bookFindByName domain.Book
+		req := request.(FindByNameRequest)
+		bookFindByName.Name = req.BookName
+		book, err := s.BookService.FindByName(ctx, &bookFindByName)
+		if err != nil {
+			return nil, err
+		}
+		return FindByNameResponse{Book: book}, nil
+	}
+}
+
+//FindByStatusRequset request struct for FindByStatus Book
+type FindByStatusRequest struct {
+	BookStatus string
+}
+
+//FindByStatusResponse response struct for FindByStatus Book
+type FindByStatusResponse struct {
+	Book []domain.Book `json:"books"`
+}
+
+func MakeFindByStatusEndpoint(s service.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		req := request.(FindByStatusRequest)
+		BookStatus := req.BookStatus
+		book, err := s.BookService.FindByStatus(ctx, BookStatus)
+		if err != nil {
+			return nil, err
+		}
+		return FindByStatusResponse{Book: book}, nil
+	}
+}
+
+//FindByNameAndStatusRequest request struct for FindByNameAndStatus Book
+type FindByNameAndStatusRequest struct {
+	BookName   string
+	BookStatus string
+}
+
+//FindByNameAndStatusResponse response struct for FindByNameAndStatus Book
+type FindByNameAndStatusRespose struct {
+	Book []domain.Book `json:"books"`
+}
+
+//MakeFindByNameAndStatusEndpoint make endpoint for FindByNameAndStatus Book
+func MakeFindByNameAndStatusEndpoint(s service.Service) endpoint.Endpoint {
+	return func(ctx context.Context, request interface{}) (interface{}, error) {
+		var bookFindByName domain.Book
+		var BookStatus string
+		req := request.(FindByNameAndStatusRequest)
+		bookFindByName.Name = req.BookName
+		BookStatus = req.BookStatus
+		book, err := s.BookService.FindByNameAndStatus(ctx, &bookFindByName, BookStatus)
+		if err != nil {
+			return nil, err
+		}
+		return FindByNameAndStatusRespose{Book: book}, nil
+	}
+}
+
+/*optional*/
+
 // FindAllRequest request struct for FindAll Book
 type FindAllRequest struct{}
 

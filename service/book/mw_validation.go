@@ -47,6 +47,21 @@ func (mw validationMiddleware) FindAll(ctx context.Context) ([]domain.Book, erro
 func (mw validationMiddleware) Find(ctx context.Context, book *domain.Book) (*domain.Book, error) {
 	return mw.Service.Find(ctx, book)
 }
+func (mw validationMiddleware) FindByName(ctx context.Context, book *domain.Book) ([]domain.Book, error) {
+	return mw.Service.FindByName(ctx, book)
+}
+func (mw validationMiddleware) FindByStatus(ctx context.Context, status string) ([]domain.Book, error) {
+	if status != "1" && status != "0" {
+		return nil, ErrFailStatus
+	}
+	return mw.Service.FindByStatus(ctx, status)
+}
+func (mw validationMiddleware) FindByNameAndStatus(ctx context.Context, book *domain.Book, status string) ([]domain.Book, error) {
+	if status != "1" && status != "0" {
+		return nil, ErrFailStatus
+	}
+	return mw.Service.FindByNameAndStatus(ctx, book, status)
+}
 
 func (mw validationMiddleware) Update(ctx context.Context, book *domain.Book) (*domain.Book, error) {
 	//check length of name

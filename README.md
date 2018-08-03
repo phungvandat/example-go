@@ -104,7 +104,7 @@ Time spent: **{{time_spent}}** hours spent in total
 
 ### Optional:
 
-*  [ ] List books and filter by name, availables status.
+*  [x] List books and filter by name, availables status.
 *  [ ] batch create books (create multiple book with 1 API)
 *  [ ] batch lending books (user can lending multiple books with 1 api)
 *  [ ] implement feature add a tags to books can search book by tag name
